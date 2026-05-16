@@ -1,16 +1,35 @@
-# React + Vite
+# Dev.Portfolio System 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, high-fidelity portfolio dashboard designed to automatically showcase public engineering projects, repositories, and technical experiments by syncing directly with the live GitHub REST API. Built using a modular, performance-oriented frontend stack with a premium cyber-minimalist aesthetic.
 
-Currently, two official plugins are available:
+## 🛠️ Tech Stack & Architecture
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Core Engine:** React 19 + Vite (for lightning-fast HMR and optimized build bundles)
+- **Styling Layer:** Tailwind CSS v4 (utilizing semantic layout wrappers, glassmorphism treatments, and custom micro-interactions)
+- **Data Fetching:** Asynchronous Native Fetch API wrapped inside a decoupled Custom React Hook
+- **State Architecture:** Unidirectional data flow leveraging derived/computed state for instantaneous client-side project filtering
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ⚡ Key Engineering Features
 
-## Expanding the ESLint configuration
+- **Automated API Synchronization:** Fetches public repositories on mount, filtered automatically to exclude external forks (`!repo.fork`) so only original source code is highlighted.
+- **Derived Filtering Pipeline:** Bypasses traditional `useEffect` state-synchronization bugs by dynamically computing technology category lists and active tag filter groupings on the fly during the natural render pipeline.
+- **Enterprise-Grade Loading Skeletons:** Features custom `animate-pulse` placeholder cards matching the exact layout layout of the content to prevent layout shifts and provide a premium user experience while data is fetching.
+- **Robust Network Error Boundaries:** Gracefully captures and displays contextual error indicators (e.g., handling API rate limits or network failures) without breaking the core UI layout.
+- **Responsive Fluid Grid:** Mobile-first layout configuration utilizing standard CSS grid properties that flawlessly collapse from 3-column desktop monitors down to standard mobile devices.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📂 File Architecture
+
+src/
+├── components/
+│   ├── FilterBar.jsx      # Dynamic navigation tags calculated from live data
+│   ├── ProjectCard.jsx    # Premium glassmorphic card with micro-hover interactions
+│   └── SkeletonCard.jsx   # Animating pulse screens to eliminate layout shifting
+├── hooks/
+│   └── useFetchRepos.js   # Decoupled custom data hook managing async lifecycle states
+├── App.jsx                # Main layout coordinator & UI state anchor
+├── index.css              # Custom global canvas setups
+└── main.jsx               # Application entry point

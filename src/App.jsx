@@ -1,122 +1,117 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import useFetchRepos from "./hooks/useFetchRepos";
+import ProjectCard from "./components/ProjectCard";
+import SkeletonCard from "./components/SkeletonCard";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const GITHUB_USERNAME = "ayushtriescode";
+
+  const { repos, loading, error } = useFetchRepos(GITHUB_USERNAME);
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const liveLanguages = [
+    "All",
+    ...new Set(repos.map((repo) => repo.language).filter(Boolean)),
+  ];
+
+  const filteredProjects =
+    activeFilter === "All"
+      ? repos
+      : repos.filter((project) => project.language === activeFilter);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+    <div className="min-h-screen bg-zinc-950 text-zinc-50 selection:bg-emerald-500/30 selection:text-emerald-300">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-zinc-950 opacity-70" />
+
+      <main className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <header className="mb-12 border-b border-zinc-900 pb-10 text-center sm:text-left">
+          <h1 className="font-mono text-4xl font-extrabold tracking-tight text-zinc-100 sm:text-5xl">
+            Dev<span className="text-emerald-400">.</span>Portfolio
+          </h1>
+          <p className="mt-3 max-w-xl text-base text-zinc-400">
+            An automated showcase of core engineering projects, repositories,
+            and technical experiments fetched in real-time.
           </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        </header>
 
-      <div className="ticks"></div>
+        {loading && (
+          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <SkeletonCard count="{6}" />
+          </section>
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {!loading && !error && (
+          <div className="mb-8 flex flex-wrap items-center gap-2.5 border-b border-zinc-900 pb-6">
+            <span className="font-mono text-xs font-semibold tracking-wider text-zinc-500 uppercase mr-2">
+              Filter by:
+            </span>
+            {liveLanguages.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveFilter(category)}
+                className={`rounded-lg px-4 py-1.5 font-mono text-xs font-medium tracking-wide transition-all duration-200 border ${
+                  activeFilter === category
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm shadow-emerald-500/5"
+                    : "bg-zinc-900/40 text-zinc-400 border-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {loading && (
+          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-xl border border-zinc-900 bg-zinc-900/20 p-6 h-48 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="h-5 w-1/2 rounded bg-zinc-800" />
+                  <div className="mt-4 h-4 w-full rounded bg-zinc-800" />
+                  <div className="mt-2 h-4 w-3/4 rounded bg-zinc-800" />
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="h-5 w-16 rounded bg-zinc-800" />
+                  <div className="h-4 w-24 rounded bg-zinc-800" />
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {error && (
+          <div className="rounded-xl border border-red-900/30 bg-red-950/10 py-12 text-center backdrop-blur-sm">
+            <span className="text-2xl">⚠️</span>
+            <h3 className="mt-4 font-mono text-sm font-semibold text-red-400">
+              Failed to sync profile
+            </h3>
+            <p className="mt-1 text-xs text-zinc-500">{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && filteredProjects.length === 0 && (
+          <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/10 py-16 text-center backdrop-blur-sm">
+            <span className="text-2xl">🔍</span>
+            <h3 className="mt-4 font-mono text-sm font-semibold text-zinc-300">
+              No repositories found
+            </h3>
+            <p className="mt-1 text-xs text-zinc-500">
+              Try selecting a different technology filter above.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && filteredProjects.length > 0 && (
+          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </section>
+        )}
+      </main>
+    </div>
+  );
 }
-
-export default App
